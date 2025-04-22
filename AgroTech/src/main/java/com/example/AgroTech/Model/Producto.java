@@ -1,12 +1,12 @@
 package com.example.AgroTech.Model;
 
 import lombok.AllArgsConstructor;
-import lombol.Data;
-import lombok.NoArgContructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgContructor
+@NoArgsConstructor
 
 public class Producto {
 
