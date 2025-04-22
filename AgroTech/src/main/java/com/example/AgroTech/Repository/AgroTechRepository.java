@@ -58,5 +58,18 @@ public class AgroTechRepository {
         if (producto != null){
             listaProducto.remove(producto);
         }
+
+        int  idPosicion = 0;
+        for (int i = 0; i < listaProducto.size(); i++){
+            if (listaProducto.get(i).getId() == id ){
+                idPosicion = i;
+                break;
+            }
+        }
+        if (idPosicion > 0) {
+            listaProducto.remove((idPosicion));
+        }
+        
+        listaProducto.removeIf(x -> x.getId() == id);
     }
 }

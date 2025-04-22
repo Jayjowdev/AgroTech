@@ -2,8 +2,6 @@ package com.example.AgroTech.Controller;
 
 import com.example.AgroTech.Model.Producto;
 import com.example.AgroTech.Service.ProductoServicio;
-
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
