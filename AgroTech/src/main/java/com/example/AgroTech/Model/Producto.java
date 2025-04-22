@@ -1,5 +1,13 @@
 package com.example.AgroTech.Model;
 
+import lombok.AllArgsConstructor;
+import lombol.Data;
+import lombok.NoArgContructor;
+
+@Data
+@AllArgsConstructor
+@NoArgContructor
+
 public class Producto {
 
 
