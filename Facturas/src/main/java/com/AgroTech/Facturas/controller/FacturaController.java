@@ -1,0 +1,49 @@
+package com.AgroTech.Facturas.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.AgroTech.Facturas.model.Factura;
+import com.AgroTech.Facturas.service.FacturaService;
+
+@RestController
+@RequestMapping("/api/v1/facturas")
+public class FacturaController {
+
+    @Autowired
+    private FacturaService facturaService;
+
+
+    @GetMapping
+    public ResponseEntity<List<Factura>> getAllFacturas() {
+        List<Factura> lista2 = facturaService.findAll();
+        if (lista2.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(lista2);
+    }
+
+    @GetMapping("/{FacturaId}")
+    public ResponseEntity<Factura> getFacturaById(@PathVariable Long FacturaId){
+        try {
+            Factura factura = facturaService.findByFacturaId(FacturaId);
+            return ResponseEntity.ok(factura);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Factura> createFactura(@RequestBody Factura factura){
+        return ResponseEntity.status(201).body(facturaService.save(factura));
+    }
+
+}

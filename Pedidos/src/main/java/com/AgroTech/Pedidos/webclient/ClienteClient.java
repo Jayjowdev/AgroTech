@@ -17,21 +17,16 @@ public class ClienteClient {
                 .build();
     }
 
-    //devuelve un Map<String, Object>, es decir, una estructura tipo 
-    //clave:valor que representa los datos JSON del cliente.
-    public Map <String, Object> getClienteById(Long id) {
-        //vamos a hacer una solicitud HTTP de tipo GET
-        //retrieve --> ejecuta la solicitud y obtén la respuesta
-        //bodyToMono --ZAquí transformas el cuerpo de la respuesta en un objeto Java
-        //es un objeto de programación reactiva que representa un solo valor futuro
-        //block --> espera aquí hasta que llegue la respuesta
+ 
+    public Map <String, Object> getClienteById(Long ClienteId) {
+    
         return this.webClient.get()
-            .uri("/{id}", id)
+            .uri("/{id}", ClienteId)
             .retrieve()
             .onStatus(
                 status -> status.is4xxClientError(),  // Si es error 4XX
                 response -> response.bodyToMono(String.class)
-                                     .map(body -> new RuntimeException("Cliente no encontrado (ID: " + id + ")"))
+                                     .map(body -> new RuntimeException("Cliente no encontrado (ID: " + ClienteId + ")"))
             )
             .bodyToMono(Map.class)
             .block();
