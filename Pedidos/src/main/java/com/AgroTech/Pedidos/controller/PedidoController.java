@@ -1,7 +1,10 @@
 package com.AgroTech.Pedidos.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,35 +13,30 @@ import org.springframework.web.bind.annotation.RestController;
 import com.AgroTech.Pedidos.model.Pedidos;
 import com.AgroTech.Pedidos.service.PedidoService;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/api/v1/pedidos")
 public class PedidoController {
 
-    private final PedidoService pedidoService;
-
-    public PedidoController(PedidoService pedidoService) {
-        this.pedidoService = pedidoService;
-    }
-
+    @Autowired
+    private PedidoService pedidoService;
+    
     @GetMapping
-    public Flux <Pedidos> getAllPedidos() {
-        return pedidoService.getAllPedidos();
-    }
-
-    @GetMapping("/{id}")
-    public Mono<Pedidos> getPedidosById(@PathVariable Integer id) {
-        return pedidoService.getPedidoById(id);
+    public ResponseEntity<List<Pedidos>> getAllPedidos() {
+        List<Pedidos> Lista2 = pedidoService.findAll();
+        if(Lista2.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        
+        return ResponseEntity.ok(Lista2);
     }
 
     @PostMapping
-    public Mono<Pedidos> createPedido(@RequestBody Pedidos pedido)
-    {
-        return pedidoService.savePedido(pedido);
-    }   
-
-
-
+    public ResponseEntity<?> createPedido(@RequestBody Pedidos pedido) {
+        try {
+            Pedidos savedPedido = pedidoService.save(pedido);
+            return ResponseEntity.status(201).body(savedPedido);
+        } catch (RuntimeException  e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 }

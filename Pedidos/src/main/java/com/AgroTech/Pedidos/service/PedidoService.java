@@ -1,34 +1,37 @@
 package com.AgroTech.Pedidos.service;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.AgroTech.Pedidos.model.Pedidos;
 import com.AgroTech.Pedidos.repository.PedidoRepository;
 import com.AgroTech.Pedidos.webclient.ClienteClient;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class PedidoService {
 
-    private final PedidoRepository pedidoRepository;
-    private final ClienteClient clienteClient;
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteClient clienteClient) {
-        this.pedidoRepository = pedidoRepository;
-        this.clienteClient = clienteClient;
-    }
+    @Autowired
+    private ClienteClient ClienteClient;
 
-    public Flux<Pedidos> getAllPedidos(){
+    public List<Pedidos> findAll() {
         return pedidoRepository.findAll();
     }
 
-    public Mono<Pedidos> getPedidoById(Integer id){
-        return pedidoRepository.findById(id);
-    }
-
-    public Mono<Pedidos> savePedido(Pedidos pedido){
+    public Pedidos save(Pedidos pedido) {
+        // Validar el cliente
+        Map<String, Object> cliente = ClienteClient.getClienteById(pedido.getIdPedido());
+        if (cliente == null || cliente.isEmpty()) {
+            throw new RuntimeException("Cliente no encontrado , no se puede guardar el pedido");
+        }
         return pedidoRepository.save(pedido);
     }
 }
