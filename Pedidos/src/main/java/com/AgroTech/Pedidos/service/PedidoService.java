@@ -27,11 +27,14 @@ public class PedidoService {
     }
 
     public Pedidos save(Pedidos pedido) {
-        // Validar el cliente
-        Map<String, Object> cliente = ClienteClient.getClienteById(pedido.getIdPedido());
+        // Validar que el cliente exista consultando al cliente-service
+        Map<String, Object> cliente = ClienteClient.getClienteById(pedido.getClienteId());
         if (cliente == null || cliente.isEmpty()) {
-            throw new RuntimeException("Cliente no encontrado , no se puede guardar el pedido");
+            throw new RuntimeException("Cliente no encontrado. No se puede guardar el pedido.");
         }
         return pedidoRepository.save(pedido);
     }
+
 }
+
+        

@@ -28,6 +28,9 @@ public class Pedidos {
     @Column(name = "id_pedido", nullable=false)
     private Integer idPedido;
 
+    @Column(name = "id_cliente", nullable=false)
+    private Long clienteId;
+
     @Column(name = "Fecha_pedido")
     private LocalDate fechaPedido;
 
