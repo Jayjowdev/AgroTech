@@ -26,5 +26,11 @@ public class DetallePedido {
 
     @Column (name = "precio_unitario")
     private double precioUnitario;
+
+    @Column (name = "pedido_id")
+    private Long pedidoId;
+
+    @Column (name = "producto_id")
+    private Long productoId;
  
 }

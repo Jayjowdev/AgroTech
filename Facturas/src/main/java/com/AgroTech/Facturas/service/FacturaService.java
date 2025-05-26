@@ -1,12 +1,14 @@
 package com.AgroTech.Facturas.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.AgroTech.Facturas.model.Factura;
 import com.AgroTech.Facturas.repository.FacturaRepository;
+import com.AgroTech.Facturas.webclient.PedidoCliente;
 
 import jakarta.transaction.Transactional;
 
@@ -16,6 +18,9 @@ public class FacturaService {
 
     @Autowired
     private FacturaRepository facturaRepository;
+
+    @Autowired
+    private PedidoCliente PedidoCliente;
 
     public List<Factura> findAll(){
         return facturaRepository.findAll();
@@ -27,6 +32,11 @@ public class FacturaService {
     }
 
     public Factura save(Factura factura){
+        Map<String, Object> pedido = PedidoCliente.getPedidoById(factura.getIdPedido());
+        if (pedido == null || pedido.isEmpty()) {
+            throw new RuntimeException("Pedido no encontrado (ID: " + factura.getIdPedido() + ")");
+        }
+
         return facturaRepository.save(factura);
     }
 }

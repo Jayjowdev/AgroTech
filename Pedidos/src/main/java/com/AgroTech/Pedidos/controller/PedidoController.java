@@ -22,12 +22,12 @@ public class PedidoController {
     
     @GetMapping
     public ResponseEntity<List<Pedidos>> getAllPedidos() {
-        List<Pedidos> Lista2 = pedidoService.findAll();
-        if(Lista2.isEmpty()){
+        List<Pedidos> Lista = pedidoService.findAll();
+        if(Lista.isEmpty()){
             return ResponseEntity.noContent().build();
         }
         
-        return ResponseEntity.ok(Lista2);
+        return ResponseEntity.ok(Lista);
     }
 
     @PostMapping

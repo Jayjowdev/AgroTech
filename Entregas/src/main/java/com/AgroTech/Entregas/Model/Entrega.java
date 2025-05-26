@@ -29,5 +29,8 @@ public class Entrega {
 
     @Column(name= "estado")
     private String estado;
+
+    @Column(name= "pedido_id")
+    private String idPedido;
 }
 

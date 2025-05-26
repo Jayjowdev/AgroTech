@@ -34,4 +34,7 @@ public class Factura {
     @Column(name= "Estado_pago")
     private String estadoPago;
 
+    @Column(name= "id_pedido")
+    private String idPedido;
+
 }

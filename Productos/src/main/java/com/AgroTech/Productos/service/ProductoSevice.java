@@ -1,12 +1,14 @@
 package com.AgroTech.Productos.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.AgroTech.Productos.model.Producto;
 import com.AgroTech.Productos.repository.ProductoRepository;
+import com.AgroTech.Productos.webclient.ProveedorClient;
 
 import jakarta.transaction.Transactional;
 
@@ -16,6 +18,9 @@ public class ProductoSevice {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private ProveedorClient proveedorClient;
 
     public List<Producto> findAll() {
         return productoRepository.findAll();
@@ -27,6 +32,12 @@ public class ProductoSevice {
     }
 
     public Producto save(Producto producto) {
+        // Validar que el proveedor existe
+        Map<String, Object> proveedor = proveedorClient.getProveedorById(producto.getProveedorId());
+        if (proveedor == null || proveedor.isEmpty()) {
+            throw new RuntimeException("Proveedor no encontrado para el ID: " + producto.getProveedorId());
+        }
+
         return productoRepository.save(producto);
     }
     
