@@ -42,8 +42,13 @@ public class FacturaController {
     }
 
     @PostMapping
-    public ResponseEntity<Factura> createFactura(@RequestBody Factura factura){
-        return ResponseEntity.status(201).body(facturaService.save(factura));
+    public ResponseEntity<?> createFactura(@RequestBody Factura factura){
+        try {
+            Factura savedFactura = facturaService.save(factura);
+            return ResponseEntity.status(201).body(savedFactura);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Error al crear la factura: " + e.getMessage());
+        }
     }
 
 }

@@ -41,7 +41,12 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto){
-        return ResponseEntity.status(201).body(productoService.save(producto));
+    public ResponseEntity<?> createProducto(@RequestBody Producto producto){
+        try{
+            Producto savedProducto = productoService.save(producto);
+            return ResponseEntity.status(201).body(savedProducto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Error al crear el producto: " + e.getMessage());
+        }
     }
 }

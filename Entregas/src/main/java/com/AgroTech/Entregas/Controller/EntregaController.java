@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,8 +41,13 @@ public class EntregaController {
     }
 
     @PostMapping
-    public ResponseEntity <Entrega> createEntrega(Entrega entrega) {
-        return ResponseEntity.status(201).body(entregaService.save(entrega));
+    public ResponseEntity <?> createEntrega(@RequestBody Entrega entrega) {
+        try {
+            Entrega savedEntrega = entregaService.save(entrega);
+        return ResponseEntity.status(201).body(savedEntrega);
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(404).body("Error al crear la entrega: " + e.getMessage());
+    }
     }
 
 }
