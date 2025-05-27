@@ -40,4 +40,11 @@ public class EntregaService {
         return entregaRepository.save(entrega);
     }
 
+    public void delete(Long entregaId) {
+        if (!entregaRepository.existsById(entregaId)) {
+            throw new RuntimeException("Entrega no encontrada (ID: " + entregaId + ")");
+        }
+        entregaRepository.deleteById(entregaId);
+    }
+
 }

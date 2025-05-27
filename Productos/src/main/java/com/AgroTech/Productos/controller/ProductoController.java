@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +48,16 @@ public class ProductoController {
             return ResponseEntity.status(201).body(savedProducto);
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Error al crear el producto: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{productoId}")
+    public ResponseEntity<?> deleteProducto(Long productoId) {
+        try {
+            productoService.delete(productoId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

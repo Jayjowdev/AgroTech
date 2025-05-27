@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class ClienteController {
         @Autowired
         private ClienteService clienteService;
 
-        @GetMapping
+        @GetMapping("/Cliente")
         public ResponseEntity <List<Cliente>> getAllClientes(){
             List<Cliente > lista2 = clienteService.findAll();
             if (lista2.isEmpty()) {
@@ -30,7 +31,7 @@ public class ClienteController {
             return ResponseEntity.ok(lista2);
         }
 
-        @GetMapping("/{id}")
+        @GetMapping("/Clienteid")
         public ResponseEntity<Cliente> getClienteById(@PathVariable Long id){
             try{
                 Cliente Cliente = clienteService.findById(id);
@@ -41,9 +42,20 @@ public class ClienteController {
             }
         }
 
-        @PostMapping
+        @PostMapping("/{Clienteid}")
         public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente){
             return ResponseEntity.status(201).body(clienteService.save(cliente));
+        }
+
+
+        @DeleteMapping("/{Clienteid}")
+        public ResponseEntity<?> deleteCliente(@PathVariable Long Clienteid) {
+            try {
+                clienteService.delete(Clienteid);
+                return ResponseEntity.noContent().build();
+            } catch (RuntimeException e) {
+                return ResponseEntity.notFound().build();
+            }
         }
 
 }

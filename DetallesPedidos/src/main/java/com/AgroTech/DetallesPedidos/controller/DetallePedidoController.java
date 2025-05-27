@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ public class DetallePedidoController {
     @Autowired
     private DetallePedidoService detallePedidoService;
 
-    @GetMapping
+    @GetMapping("/detallePedidoId")
     public ResponseEntity<List<DetallePedido>> getAllDetallePedidos() {
         List<DetallePedido> lista = detallePedidoService.findAll();
         if (lista.isEmpty()) {
@@ -29,7 +31,7 @@ public class DetallePedidoController {
         return ResponseEntity.ok(lista);
     }
 
-    @PostMapping
+    @PostMapping("/detallePedidoId")
     public ResponseEntity<?> createDetallePedido(@RequestBody DetallePedido detallePedido) {
     try{
         DetallePedido savedDetallePedido = detallePedidoService.save(detallePedido);
@@ -37,5 +39,14 @@ public class DetallePedidoController {
     } catch (RuntimeException e) {
         return ResponseEntity.status(400).body("Error al crear el detalle del pedido: " + e.getMessage());
     }
+    }
+    @DeleteMapping("/{detallePedidoId}")
+    public ResponseEntity<?> deleteDetallePedido(@PathVariable Long detallePedidoId) {
+        try {
+            detallePedidoService.delete(detallePedidoId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

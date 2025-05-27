@@ -43,6 +43,12 @@ public class DetallePedidoService {
         return detallePedidoRepository.save(detallePedido);
     }
 
+    public void delete(Long detallePedidoId) {
+        if (!detallePedidoRepository.existsById(detallePedidoId)) {
+            throw new RuntimeException("DetallePedido no encontrado por id: " + detallePedidoId);
+        }
+        detallePedidoRepository.deleteById(detallePedidoId);
+    }
     
     
 }

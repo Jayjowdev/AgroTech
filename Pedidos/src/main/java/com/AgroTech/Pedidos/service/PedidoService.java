@@ -35,6 +35,12 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    public void delete(Long pedidoId) {
+        if (!pedidoRepository.existsById(pedidoId)) {
+            throw new RuntimeException("Pedido no encontrado (ID: " + pedidoId + ")");
+        }
+        pedidoRepository.deleteById(pedidoId);
+    }
 }
 
         

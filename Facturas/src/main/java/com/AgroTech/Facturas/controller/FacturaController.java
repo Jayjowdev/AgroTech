@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,16 @@ public class FacturaController {
             return ResponseEntity.status(201).body(savedFactura);
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Error al crear la factura: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{FacturaId}")
+    public ResponseEntity<?> deleteFactura(@PathVariable Long FacturaId) {
+        try {
+            facturaService.delete(FacturaId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

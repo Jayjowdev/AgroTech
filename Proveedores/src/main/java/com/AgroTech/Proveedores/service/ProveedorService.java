@@ -30,4 +30,11 @@ public class ProveedorService {
     public Proveedor save(Proveedor proveedor) {
         return proveedorRepository.save(proveedor);
     }
+
+    public void delete(Long proveedorId) {
+        if (!proveedorRepository.existsById(proveedorId)) {
+            throw new RuntimeException("Proveedor no encontrado (ID: " + proveedorId + ")");
+        }
+        proveedorRepository.deleteById(proveedorId);
+    }
 }

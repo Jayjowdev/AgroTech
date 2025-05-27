@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,7 @@ public class EntregaController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/entregaId")
     public ResponseEntity <?> createEntrega(@RequestBody Entrega entrega) {
         try {
             Entrega savedEntrega = entregaService.save(entrega);
@@ -48,6 +49,16 @@ public class EntregaController {
     } catch (RuntimeException e) {
         return ResponseEntity.status(404).body("Error al crear la entrega: " + e.getMessage());
     }
+    }
+
+    @DeleteMapping("/{entregaId}")
+    public ResponseEntity <?> deleteEntrega(@PathVariable Long entregaId) {
+        try {
+            entregaService.delete(entregaId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

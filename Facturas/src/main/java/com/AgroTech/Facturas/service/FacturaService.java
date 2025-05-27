@@ -36,7 +36,13 @@ public class FacturaService {
         if (pedido == null || pedido.isEmpty()) {
             throw new RuntimeException("Pedido no encontrado (ID: " + factura.getIdPedido() + ")");
         }
-
         return facturaRepository.save(factura);
+    }
+
+    public void delete(Long facturaId) {
+        if (!facturaRepository.existsById(facturaId)) {
+            throw new RuntimeException("Factura no encontrada (ID: " + facturaId + ")");
+        }
+        facturaRepository.deleteById(facturaId);
     }
 }
