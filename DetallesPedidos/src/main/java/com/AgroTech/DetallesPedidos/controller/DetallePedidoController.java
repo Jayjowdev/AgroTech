@@ -22,7 +22,7 @@ public class DetallePedidoController {
     @Autowired
     private DetallePedidoService detallePedidoService;
 
-    @GetMapping("/detallePedidoId")
+    @GetMapping
     public ResponseEntity<List<DetallePedido>> getAllDetallePedidos() {
         List<DetallePedido> lista = detallePedidoService.findAll();
         if (lista.isEmpty()) {
@@ -31,7 +31,7 @@ public class DetallePedidoController {
         return ResponseEntity.ok(lista);
     }
 
-    @PostMapping("/detallePedidoId")
+    @PostMapping("/{id}")
     public ResponseEntity<?> createDetallePedido(@RequestBody DetallePedido detallePedido) {
     try{
         DetallePedido savedDetallePedido = detallePedidoService.save(detallePedido);
@@ -40,7 +40,7 @@ public class DetallePedidoController {
         return ResponseEntity.status(400).body("Error al crear el detalle del pedido: " + e.getMessage());
     }
     }
-    @DeleteMapping("/{detallePedidoId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDetallePedido(@PathVariable Long detallePedidoId) {
         try {
             detallePedidoService.delete(detallePedidoId);

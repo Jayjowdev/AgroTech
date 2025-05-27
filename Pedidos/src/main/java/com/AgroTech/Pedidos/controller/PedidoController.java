@@ -31,7 +31,7 @@ public class PedidoController {
         return ResponseEntity.ok(Lista);
     }
 
-    @PostMapping
+    @PostMapping("/{Id}")
     public ResponseEntity<?> createPedido(@RequestBody Pedidos pedido) {
         try {
             Pedidos savedPedido = pedidoService.save(pedido);
@@ -40,7 +40,7 @@ public class PedidoController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
-    @DeleteMapping
+    @DeleteMapping("/{Id}")
     public ResponseEntity<?> deletePedido(@RequestBody Long pedidoId) {
         try {
             pedidoService.delete(pedidoId);

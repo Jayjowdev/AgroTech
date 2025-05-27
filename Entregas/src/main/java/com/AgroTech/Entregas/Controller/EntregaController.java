@@ -31,7 +31,7 @@ public class EntregaController {
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/entregaId")
+    @GetMapping("/id")
     public ResponseEntity <Entrega> getEntregaById(@PathVariable  Long entregaId) {
         try {
             Entrega entrega = entregaService.findByEntregaId(entregaId);
@@ -41,7 +41,7 @@ public class EntregaController {
         }
     }
 
-    @PostMapping("/entregaId")
+    @PostMapping("/{id}")
     public ResponseEntity <?> createEntrega(@RequestBody Entrega entrega) {
         try {
             Entrega savedEntrega = entregaService.save(entrega);
@@ -51,7 +51,7 @@ public class EntregaController {
     }
     }
 
-    @DeleteMapping("/{entregaId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity <?> deleteEntrega(@PathVariable Long entregaId) {
         try {
             entregaService.delete(entregaId);

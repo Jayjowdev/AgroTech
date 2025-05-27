@@ -30,7 +30,7 @@ public class ProveedorCliente {
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/ProveedorId")
+    @GetMapping("/Id")
     public ResponseEntity<Proveedor> getProveedorById(@PathVariable Long proveedorId) {
         try {
             Proveedor proveedor = proveedorService.findByProveedorId(proveedorId);
@@ -40,12 +40,12 @@ public class ProveedorCliente {
         }
     }
 
-    @PostMapping
+    @PostMapping("/{Id}")
     public ResponseEntity<Proveedor> createProveedor(Proveedor proveedor) {
         return ResponseEntity.status(201).body(proveedorService.save(proveedor));
     }
 
-    @DeleteMapping("/{proveedorId}")
+    @DeleteMapping("/{Id}")
     public ResponseEntity<?> deleteProveedor(@PathVariable Long proveedorId) {
         try {
             proveedorService.delete(proveedorId);

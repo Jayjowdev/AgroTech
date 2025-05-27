@@ -22,7 +22,7 @@ public class ClienteController {
         @Autowired
         private ClienteService clienteService;
 
-        @GetMapping("/Cliente")
+        @GetMapping
         public ResponseEntity <List<Cliente>> getAllClientes(){
             List<Cliente > lista2 = clienteService.findAll();
             if (lista2.isEmpty()) {
@@ -31,7 +31,7 @@ public class ClienteController {
             return ResponseEntity.ok(lista2);
         }
 
-        @GetMapping("/Clienteid")
+        @GetMapping
         public ResponseEntity<Cliente> getClienteById(@PathVariable Long id){
             try{
                 Cliente Cliente = clienteService.findById(id);
@@ -42,13 +42,13 @@ public class ClienteController {
             }
         }
 
-        @PostMapping("/{Clienteid}")
+        @PostMapping("/{id}")
         public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente){
             return ResponseEntity.status(201).body(clienteService.save(cliente));
         }
 
 
-        @DeleteMapping("/{Clienteid}")
+        @DeleteMapping("/{id}")
         public ResponseEntity<?> deleteCliente(@PathVariable Long Clienteid) {
             try {
                 clienteService.delete(Clienteid);

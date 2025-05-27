@@ -32,7 +32,7 @@ public class FacturaController {
         return ResponseEntity.ok(lista2);
     }
 
-    @GetMapping("/{FacturaId}")
+    @GetMapping("/Id")
     public ResponseEntity<Factura> getFacturaById(@PathVariable Long FacturaId){
         try {
             Factura factura = facturaService.findByFacturaId(FacturaId);
@@ -42,7 +42,7 @@ public class FacturaController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/{Id}")
     public ResponseEntity<?> createFactura(@RequestBody Factura factura){
         try {
             Factura savedFactura = facturaService.save(factura);
@@ -52,7 +52,7 @@ public class FacturaController {
         }
     }
 
-    @DeleteMapping("/{FacturaId}")
+    @DeleteMapping("/{Id}")
     public ResponseEntity<?> deleteFactura(@PathVariable Long FacturaId) {
         try {
             facturaService.delete(FacturaId);

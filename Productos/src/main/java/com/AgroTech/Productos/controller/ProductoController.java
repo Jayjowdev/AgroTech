@@ -31,7 +31,7 @@ public class ProductoController {
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/ProductoId")
+    @GetMapping("/Id")
     public ResponseEntity<Producto> getProductoById(Long ProductoId) {
         try {
             Producto producto = productoService.findById(ProductoId);
@@ -41,7 +41,7 @@ public class ProductoController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/{Id}")
     public ResponseEntity<?> createProducto(@RequestBody Producto producto){
         try{
             Producto savedProducto = productoService.save(producto);
@@ -51,7 +51,7 @@ public class ProductoController {
         }
     }
 
-    @DeleteMapping("/{productoId}")
+    @DeleteMapping("/{Id}")
     public ResponseEntity<?> deleteProducto(Long productoId) {
         try {
             productoService.delete(productoId);
