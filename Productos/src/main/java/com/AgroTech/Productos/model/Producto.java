@@ -41,7 +41,4 @@ public class Producto {
     @Column(name= "estado")
     private String estado;
 
-    @Column(name = "proveedor_id")
-    private Long proveedorId;
-
 }

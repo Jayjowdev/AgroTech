@@ -1,5 +1,7 @@
 package com.AgroTech.Usuarios.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,6 +20,10 @@ public class Usuario {
     private String nombre;
     private String correo;
     private String password;
+    private boolean activo = true;
+    private Date fechaCreacion = new Date();
+    private Date ultimo_login = new Date();
+
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
