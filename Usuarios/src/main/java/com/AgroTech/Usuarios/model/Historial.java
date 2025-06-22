@@ -1,5 +1,7 @@
 package com.AgroTech.Usuarios.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,16 +10,15 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Usuario {
-
+public class Historial {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long usuarioId;
-    private String nombre;
-    private String correo;
-    private String telefono;
-    private String password;
-    
-    
+    private Long historialId;
 
+    private String ultimaCompra;
+    private String ultimoArriendo;
+    private Date fechaCreacion = new Date();
+    private Date ultimo_login = new Date();
+    private boolean activo = true;
 }
