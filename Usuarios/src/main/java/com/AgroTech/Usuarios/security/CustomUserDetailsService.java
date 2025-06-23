@@ -4,6 +4,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.stream.Collectors;
 
 import com.AgroTech.Usuarios.model.Usuario;
 import com.AgroTech.Usuarios.repository.UsuarioRepository;
@@ -26,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService{
             usuario.getUsername(),
             usuario.getPassword(),
             usuario.getRol().stream()
-                .map(rol -> new SimpleGrantedAuthority(rol.getName()))
+                .map(rol -> new SimpleGrantedAuthority(rol.getNombreRol()))
                 .collect(Collectors.toList())
         );
     }
