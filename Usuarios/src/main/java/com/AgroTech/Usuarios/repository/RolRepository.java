@@ -3,9 +3,9 @@ package com.AgroTech.Usuarios.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.AgroTech.Usuarios.model.Usuario;
+import com.AgroTech.Usuarios.model.Rol;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Object> {
-    Usuario findByUsername(String username);
+public interface RolRepository extends  JpaRepository<Rol, Object> {
+    Rol findByNombreRol(String nombreRol);
 }
