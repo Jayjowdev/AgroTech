@@ -37,9 +37,9 @@ public class SeguimientoProductoController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<SeguimientoProducto> obtenerPorId(@PathVariable Long id) {
-        SeguimientoProducto producto = seguimientoProductoService.findById(id);
-        return ResponseEntity.ok(producto);
-    }
+        SeguimientoProducto seguimiento = seguimientoProductoService.findById(id);
+        return ResponseEntity.ok(seguimiento);
+}
 
     @GetMapping("/codigo/{codigo}")
     public ResponseEntity<SeguimientoProducto> obtenerPorCodigo(@PathVariable String codigo) {
@@ -56,6 +56,7 @@ public class SeguimientoProductoController {
         seguimientoProductoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
        
 }
 

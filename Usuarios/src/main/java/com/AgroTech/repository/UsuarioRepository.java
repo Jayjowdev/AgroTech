@@ -8,4 +8,5 @@ import com.AgroTech.model.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Object> {
     Usuario findByUsername(String username);
+    boolean existsByCorreo(String correo);
 }

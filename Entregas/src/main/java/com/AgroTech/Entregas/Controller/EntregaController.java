@@ -34,7 +34,7 @@ public class EntregaController {
     @GetMapping("/id")
     public ResponseEntity <Entrega> getEntregaById(@PathVariable  Long entregaId) {
         try {
-            Entrega entrega = entregaService.findByEntregaId(entregaId);
+            Entrega entrega = (Entrega) entregaService.findByEntregaId(entregaId);
             return ResponseEntity.ok(entrega);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

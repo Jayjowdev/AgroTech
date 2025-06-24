@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class ProductoSevice {
+public class ProductoService {
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -25,6 +25,10 @@ public class ProductoSevice {
         return productoRepository.findById(ProductoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado (ID: " + ProductoId + ")"));
     }
+
+    public Producto guardar(Producto producto) {
+    return productoRepository.save(producto);
+    }
     
     public void delete(Long productoId) {
         if (!productoRepository.existsById(productoId)) {
@@ -32,4 +36,9 @@ public class ProductoSevice {
         }
         productoRepository.deleteById(productoId);
     }
+
+	public Object obtenerProductoPorId(long l) {
+		//Metodo que utliza para el mockup y testeo
+		throw new UnsupportedOperationException("Metodo sin implementar 'obtenerProductoPorId'");
+	}
 }

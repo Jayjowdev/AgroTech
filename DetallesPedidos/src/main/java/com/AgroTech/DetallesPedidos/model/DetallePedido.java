@@ -32,5 +32,16 @@ public class DetallePedido {
 
     @Column (name = "producto_id")
     private Long productoId;
+
+    public void setIdDetallePedido(long l) {
+        // Metodo implementado para Testeo
+        throw new UnsupportedOperationException("Metodo sin implementacion 'setIdDetallePedido'");
+    }
+
+    public Long getIdDetallePedido() {
+        // Metodo implementado para testeo 
+        throw new UnsupportedOperationException("Metodo sin implementacion 'getIdDetallePedido'");
+    }
+
  
 }

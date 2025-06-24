@@ -2,6 +2,7 @@ package com.AgroTech.DetallesPedidos.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class DetallePedidoService {
     public List <DetallePedido> findAll(){
         return detallePedidoRepository.findAll();
     }
+
+    public DetallePedido guardarDetallePedido(DetallePedido detallePedido) {
+    return detallePedidoRepository.save(detallePedido);
+    }
     
     public DetallePedido findById(Long detallePedidoId) {
         return detallePedidoRepository.findById(detallePedidoId)
@@ -52,6 +57,11 @@ public class DetallePedidoService {
             throw new RuntimeException("DetallePedido no encontrado por id: " + detallePedidoId);
         }
         detallePedidoRepository.deleteById(detallePedidoId);
+    }
+
+    public Optional<DetallePedido> obtenerDetallePedidoPorId(long l) {
+        // Metodo para testeo 
+        throw new UnsupportedOperationException("Metodo no implementado 'obtenerDetallePedidoPorId'");
     }
     
     

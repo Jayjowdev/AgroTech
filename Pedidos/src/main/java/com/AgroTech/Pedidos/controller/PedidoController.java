@@ -33,6 +33,17 @@ public class PedidoController {
         return ResponseEntity.ok(Lista);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Pedidos> getPedidoById(@PathVariable Long id) {
+    Pedidos pedido = pedidoService.findById(id);
+
+    if (pedido != null) {
+        return ResponseEntity.ok(pedido);
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+    }
+
     @PostMapping("/{Id}")
     public ResponseEntity<?> createPedido(@RequestBody Pedidos pedido) {
         try {

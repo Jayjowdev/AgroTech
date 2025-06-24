@@ -50,7 +50,7 @@ public class Incidencia {
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
     private EstadoMaquinaria estadoMaquinaria = EstadoMaquinaria.OPERATIVA;
-
+    
     @ManyToOne
     @JoinColumn(name = "solicitudId", nullable = false)
     private Solicitud solicitud;
@@ -67,6 +67,18 @@ public class Incidencia {
         MANTENIMIENTO,
         FUERA_DE_SERVICIO
     }
+
+    public Long getId() {
+        throw new UnsupportedOperationException("Metodo sin implementar'getId'");
+        
+    } //Metodos que se utilizaran para los testeo unitarios
+
+    public void setId(long l) {
+        throw new UnsupportedOperationException("Metodo sin implementar 'setId'");
+    }
+
+    
+
 }
 
 

@@ -52,6 +52,10 @@ public class UsuarioService {
         usuarioRepository.deleteById(usuarioId);
     }
 
+    public boolean existeUsuarioPorCorreo(String correo) {
+    return usuarioRepository.existsByCorreo(correo);
+}
+
     public Usuario obtenerUsuarioPorId(Long usuarioId){
         return usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId));

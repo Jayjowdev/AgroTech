@@ -1,6 +1,7 @@
 package com.AgroTech.Entregas.Model;
 
 import java.util.Date;
+import java.util.Optional;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,5 +33,14 @@ public class Entrega {
 
     @Column(name= "pedido_id")
     private String idPedido;
+
+    public void setIdEntrega(long l) {
+        // Para metodo de testeo
+        throw new UnsupportedOperationException("Metodo sin implementar 'setIdEntrega'");
+    }
+    public Optional<Entrega> buscarEntregaPorId(long id) {
+    // Para implementar la logica de mock para el testing
+    return Optional.empty();
+}
 }
 

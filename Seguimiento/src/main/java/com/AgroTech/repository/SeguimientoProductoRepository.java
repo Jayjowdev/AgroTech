@@ -11,4 +11,5 @@ import com.AgroTech.model.SeguimientoProducto;
 public interface SeguimientoProductoRepository extends JpaRepository<SeguimientoProducto, Object> {
    
     Optional<SeguimientoProducto> findByCodigoSeguimiento(String codigoSeguimiento);
+
 }

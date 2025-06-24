@@ -26,13 +26,12 @@ public class EntregaService {
         return entregaRepository.findAll();
     }
 
-    public Entrega findByEntregaId(Long entregaId) {
+    public Object findByEntregaId(Long entregaId) {
         return entregaRepository.findById(entregaId)
                 .orElseThrow(() -> new RuntimeException("Entrega no encontrada (ID: " + entregaId + ")"));
     }
     
     public Entrega save(Entrega entrega) {
-        
         Map<String, Object> pedido = pedidoClient.getPedidoById(entrega.getIdPedido());
         if (pedido == null || pedido.isEmpty()) {
             throw new RuntimeException("Pedido no encontrado (ID: " + entrega.getIdPedido() + ")");
@@ -45,6 +44,10 @@ public class EntregaService {
             throw new RuntimeException("Entrega no encontrada (ID: " + entregaId + ")");
         }
         entregaRepository.deleteById(entregaId);
+    }
+
+    public Object buscarEntregaPorId(long l) {
+        throw new UnsupportedOperationException("Metodo sin implementar 'buscarEntregaPorId'");
     }
 
 }

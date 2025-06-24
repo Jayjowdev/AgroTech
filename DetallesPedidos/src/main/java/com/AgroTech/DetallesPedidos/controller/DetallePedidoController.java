@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.AgroTech.DetallesPedidos.model.DetallePedido;
 import com.AgroTech.DetallesPedidos.service.DetallePedidoService;
 
+
 @RestController
 @RequestMapping("/api/v1/detalle-pedido")
 public class DetallePedidoController {
@@ -22,6 +23,13 @@ public class DetallePedidoController {
     @Autowired
     private DetallePedidoService detallePedidoService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DetallePedido> obtenerDetallePedidoPorId(@PathVariable Long id) {
+    return detallePedidoService.obtenerDetallePedidoPorId(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
     @GetMapping
     public ResponseEntity<List<DetallePedido>> getAllDetallePedidos() {
         List<DetallePedido> lista = detallePedidoService.findAll();
@@ -30,6 +38,12 @@ public class DetallePedidoController {
         }
         return ResponseEntity.ok(lista);
     }
+
+    @PostMapping
+    public DetallePedido guardarDetallePedido(@RequestBody DetallePedido detallePedido) {
+        return detallePedidoService.guardarDetallePedido(detallePedido);
+    }
+
 
     @PostMapping("/{id}")
     public ResponseEntity<?> createDetallePedido(@RequestBody DetallePedido detallePedido) {

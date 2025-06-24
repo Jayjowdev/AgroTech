@@ -41,4 +41,19 @@ public class Producto {
     @Column(name= "estado")
     private String estado;
 
+
+    //Metodos que se utilizan para la creacion de mockUp y testeo
+    public void setId(long l) {
+        throw new UnsupportedOperationException("metodo sin implementar'setId'");
+    }
+    public Long getId() {
+        throw new UnsupportedOperationException("metodo sin implementar 'getId'");
+    }
+    public void setIdProducto(long l) {
+        throw new UnsupportedOperationException("metodo sin implementar 'setIdProducto'");
+    }
+    public Long getIdProducto() {
+        throw new UnsupportedOperationException("metodo sin implementar 'getIdProducto'");
+    }
+
 }

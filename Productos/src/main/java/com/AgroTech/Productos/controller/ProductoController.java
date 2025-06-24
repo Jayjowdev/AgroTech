@@ -1,6 +1,7 @@
 package com.AgroTech.Productos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.AgroTech.Productos.model.Producto;
-import com.AgroTech.Productos.service.ProductoSevice;
+import com.AgroTech.Productos.service.ProductoService;
 
 @RestController
 @RequestMapping("/api/v1/productos")
@@ -18,7 +19,7 @@ import com.AgroTech.Productos.service.ProductoSevice;
 public class ProductoController {
 
     @Autowired
-    private ProductoSevice productoService;
+    private ProductoService productoService;
 
     @GetMapping
     public ResponseEntity<List<Producto>> getAllProductos() {
@@ -48,5 +49,10 @@ public class ProductoController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public Optional<Producto> obtenerProductoPorId(long l) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'obtenerProductoPorId'");
     }
 }

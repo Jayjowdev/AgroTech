@@ -25,7 +25,6 @@ public Incidencia crearIncidencia(Incidencia incidencia, Long solicitudId) {
         if (solicitud == null) {
             throw new RuntimeException("Maquinaria no encontrada");
         }
-        
         incidencia.setSolicitud(solicitud);
         return incidenciaRepository.save(incidencia);
     }
@@ -54,5 +53,6 @@ public Incidencia crearIncidencia(Incidencia incidencia, Long solicitudId) {
         return incidenciaRepository.findById(incidenciaId)
             .orElseThrow(() -> new RuntimeException("Incidencia no encontrada con ID: " + incidenciaId));
     }
-
+    
+    
 }
