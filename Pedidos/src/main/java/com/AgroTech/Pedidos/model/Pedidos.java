@@ -24,12 +24,14 @@ import lombok.NoArgsConstructor;
 public class Pedidos {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id_pedido", nullable=false)
-    private Long idPedido;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "id_cliente", nullable=false)
-    private Long clienteId;
+    @Column(name = "producto_id", nullable = false)
+    private Long productoId;
+
+    @Column(name = "cantidad", nullable = false)
+    private Integer cantidad;
 
     @Column(name = "Fecha_pedido")
     private LocalDate fechaPedido;

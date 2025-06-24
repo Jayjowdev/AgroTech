@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.AgroTech.DetallesPedidos.model.DetallePedido;
 import com.AgroTech.DetallesPedidos.repository.DetallePedidoRepository;
-import com.AgroTech.DetallesPedidos.webclient.DetallePedidoClient;
+import com.AgroTech.DetallesPedidos.webclient.PedidoClient;
+import com.AgroTech.DetallesPedidos.webclient.ProductoClient;
 
 import jakarta.transaction.Transactional;
 
@@ -20,7 +21,10 @@ public class DetallePedidoService {
     private DetallePedidoRepository detallePedidoRepository;
 
     @Autowired
-    private DetallePedidoClient detallePedidoClient;
+    private PedidoClient detallePedidoClient;
+
+    @Autowired
+    private ProductoClient productoClient;
 
     public List <DetallePedido> findAll(){
         return detallePedidoRepository.findAll();
@@ -36,7 +40,7 @@ public class DetallePedidoService {
         if (pedido == null || pedido.isEmpty()) {
             throw new RuntimeException("Pedido no encontrado para el ID: " + detallePedido.getPedidoId());
         }
-        Map<String, Object> producto = detallePedidoClient.getProductoById(detallePedido.getProductoId());
+        Map<String, Object> producto = productoClient.getProductoById(detallePedido.getProductoId());
         if (producto == null || producto.isEmpty()) {
             throw new RuntimeException("Producto no encontrado para el ID: " + detallePedido.getProductoId());
         }

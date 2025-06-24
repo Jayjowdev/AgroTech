@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.AgroTech.Pedidos.model.Pedidos;
 import com.AgroTech.Pedidos.repository.PedidoRepository;
-import com.AgroTech.Pedidos.webclient.ClienteClient;
+import com.AgroTech.Pedidos.webclient.ProductoClient;
 
 import jakarta.transaction.Transactional;
 
@@ -20,27 +20,39 @@ public class PedidoService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private ClienteClient ClienteClient;
+    private ProductoClient productoClient;
 
-    public List<Pedidos> findAll() {
+    public List<Pedidos> findAll(){
         return pedidoRepository.findAll();
     }
 
-    public Pedidos save(Pedidos pedido) {
-        // Validar que el cliente exista consultando al cliente-service
-        Map<String, Object> cliente = ClienteClient.getClienteById(pedido.getClienteId());
-        if (cliente == null || cliente.isEmpty()) {
-            throw new RuntimeException("Cliente no encontrado. No se puede guardar el pedido.");
+    public Pedidos findById(Long id){
+        return pedidoRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Pedido no encontrado (ID: "+ id +")"));
+    }
+
+    public Pedidos save(Pedidos pedido){
+        Map<String, Object> producto = productoClient.getProductoById(String.valueOf(pedido.getProductoId()));
+        if (producto==null || producto.isEmpty()) {
+            throw new RuntimeException("Producto no encontrado (ID: " + pedido.getProductoId() + ")");
         }
+
         return pedidoRepository.save(pedido);
     }
+     public Pedidos update(Long id, Pedidos pedidoActualizado) {
+        Pedidos pedidoExistente = findById(id);
 
-    public void delete(Long pedidoId) {
-        if (!pedidoRepository.existsById(pedidoId)) {
-            throw new RuntimeException("Pedido no encontrado (ID: " + pedidoId + ")");
+        pedidoExistente.setCantidad(pedidoActualizado.getCantidad());
+        pedidoExistente.setEstado(pedidoActualizado.getEstado());
+        pedidoExistente.setFechaPedido(pedidoActualizado.getFechaPedido());
+
+        return pedidoRepository.save(pedidoExistente);
+    }
+
+    public void delete(Long id) {
+        if (!pedidoRepository.existsById(id)) {
+            throw new RuntimeException("Pedido no encontrado (ID: " + id + ")");
         }
-        pedidoRepository.deleteById(pedidoId);
+        pedidoRepository.deleteById(id);
     }
 }
-
-        
