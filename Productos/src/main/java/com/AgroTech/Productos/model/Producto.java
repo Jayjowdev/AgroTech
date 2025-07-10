@@ -1,7 +1,5 @@
 package com.AgroTech.Productos.model;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,43 +16,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 
 public class Producto {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long ProductoId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "nombre")
+    @Column(name="Nombre",nullable=false, length=200)
     private String nombre;
 
-    @Column(name = "descripcion")
-    private String descripcion;
+    @Column(name = "precio",nullable=false)
+    private int precio;
 
-    @Column(name = "precio")
-    private BigDecimal precio;
-
-    @Column(name = "stock")
+    @Column(name="stock", nullable=false)
     private int stock;
-
-    @Column(name= "categoria")
-    private String categoria;
-
-    @Column(name= "estado")
-    private String estado;
-
-
-    //Metodos que se utilizan para la creacion de mockUp y testeo
-    public void setId(long l) {
-        throw new UnsupportedOperationException("metodo sin implementar'setId'");
-    }
-    public Long getId() {
-        throw new UnsupportedOperationException("metodo sin implementar 'getId'");
-    }
-    public void setIdProducto(long l) {
-        throw new UnsupportedOperationException("metodo sin implementar 'setIdProducto'");
-    }
-    public Long getIdProducto() {
-        throw new UnsupportedOperationException("metodo sin implementar 'getIdProducto'");
-    }
-
 }

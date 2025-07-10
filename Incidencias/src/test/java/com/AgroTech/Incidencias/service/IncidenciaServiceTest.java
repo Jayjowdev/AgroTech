@@ -1,69 +1,52 @@
 package com.AgroTech.Incidencias.service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.AgroTech.model.Incidencia;
-import com.AgroTech.repository.IncidenciaRepository;
-import com.AgroTech.service.IncidenciaService;
+import com.AgroTech.Incidencias.model.Incidencia;
+import com.AgroTech.Incidencias.model.Incidencia.EstadoIncidencia;
+import com.AgroTech.Incidencias.model.Incidencia.EstadoMaquina;
+import com.AgroTech.Incidencias.repository.IncidenciaRepository;
 
-class IncidenciaServiceTest {
-
-    @InjectMocks
-    private IncidenciaService incidenciaService;
+@ExtendWith(MockitoExtension.class)
+public class IncidenciaServiceTest {
 
     @Mock
-    private IncidenciaRepository incidenciaRepository;
+    private IncidenciaRepository repository;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @InjectMocks
+    private IncidenciaService service;
+
+    @Test
+    void testObtenerTodasLasIncidencias() {
+        Incidencia i1 = new Incidencia(1L, "ABC123", new Date(), EstadoIncidencia.ABIERTA, EstadoMaquina.MANTENIMIENTO);
+        Incidencia i2 = new Incidencia(2L, "XYZ789", new Date(), EstadoIncidencia.CERRADA, EstadoMaquina.OPERATIVA);
+
+        when(repository.findAll()).thenReturn(Arrays.asList(i1, i2));
+
+        List<Incidencia> resultado = service.findAll();
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado.get(0).getSerialMaquina()).isEqualTo("ABC123");
     }
 
     @Test
     void testGuardarIncidencia() {
-        Incidencia incidencia = new Incidencia();
-        Long solicitudId = 1L; // Add this line to define solicitudId
-        when(incidenciaRepository.save(incidencia)).thenReturn(incidencia);
+        Incidencia nueva = new Incidencia(null, "ZZZ456", new Date(), EstadoIncidencia.ABIERTA, EstadoMaquina.MANTENIMIENTO);
+        Incidencia guardada = new Incidencia(10L, "ZZZ456", new Date(), EstadoIncidencia.CERRADA, EstadoMaquina.OPERATIVA);
 
-        Incidencia resultado = incidenciaService.crearIncidencia(incidencia, solicitudId);
+        when(repository.save(nueva)).thenReturn(guardada);
 
-        assertNotNull(resultado);
-        verify(incidenciaRepository, times(1)).save(incidencia);
-    }
-
-    @Test
-    void testObtenerIncidenciaPorId() {
-        Incidencia incidencia = new Incidencia();
-        incidencia.setId(1L);
-        when(incidenciaRepository.findById(1L)).thenReturn(Optional.of(incidencia));
-
-        Incidencia resultado = incidenciaService.obtenerIncidenciaPorId(1L);
-
-        assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
-    }
-
-    @Test
-    void testListarTodasLasIncidencias() {
-        List<Incidencia> lista = Arrays.asList(new Incidencia(), new Incidencia());
-        when(incidenciaRepository.findAll()).thenReturn(lista);
-
-        List<Incidencia> resultado = incidenciaService.obtenerTodasIncidencias();
-
-        assertEquals(2, resultado.size());
-        verify(incidenciaRepository).findAll();
+        Incidencia resultado = service.saveIncidencia(nueva);
+        assertThat(resultado.getId()).isEqualTo(10L);
+        assertThat(resultado.getSerialMaquina()).isEqualTo("ZZZ456");
     }
 }

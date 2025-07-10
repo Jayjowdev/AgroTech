@@ -1,41 +1,52 @@
-
 package com.AgroTech.Productos.service;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.AgroTech.Productos.model.Producto;
 import com.AgroTech.Productos.repository.ProductoRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+@ExtendWith(MockitoExtension.class)
 public class ProductoServiceTest {
 
     @Mock
-    private ProductoRepository productoRepository;
+    private ProductoRepository repository;
 
     @InjectMocks
-    private ProductoService productoService;
+    private ProductoService service;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+
+    void testObtenerProductos() {
+        Producto p1 = new Producto(1L, "Tractor", 15900000, 10);
+        Producto p2 = new Producto(2L, "Cocechadora", 12500000, 6);
+
+        when(repository.findAll()).thenReturn(Arrays.asList(p1, p2));
+
+        List<Producto> resultado = service.findAll();
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado.get(0).getNombre()).isEqualTo("Tomate");
     }
 
     @Test
-    void testObtenerProductoPorId() {
-        Producto producto = new Producto();
-        producto.setIdProducto(1L);
-        when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
+    void testGuardarProducto() {
+        Producto nuevo = new Producto(1L, "Tractor", 15900000, 10);
+        Producto guardado = new Producto(2L, "Cocechadora", 12500000, 6);
 
-        Producto result = productoService.findById(1L);
+        when(repository.save(nuevo)).thenReturn(guardado);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getIdProducto());
+        Producto resultado = service.saveProducto(nuevo);
+        assertThat(resultado.getId()).isEqualTo(10L);
+        assertThat(resultado.getNombre()).isEqualTo("Lechuga");
     }
 }
+

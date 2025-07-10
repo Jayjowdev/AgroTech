@@ -1,22 +1,29 @@
 package com.AgroTech.Pedidos.controller;
 
-import com.AgroTech.Pedidos.model.Pedidos;
-import com.AgroTech.Pedidos.service.PedidoService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.http.MediaType;
 
-import java.util.Arrays;
+import com.AgroTech.Pedidos.model.Pedido;
+import com.AgroTech.Pedidos.service.PedidoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@WebMvcTest(PedidoController.class)
+
+@WebMvcTest(PedidoControllerTest.class)
 public class PedidoControllerTest {
 
     @Autowired
@@ -25,33 +32,33 @@ public class PedidoControllerTest {
     @MockBean
     private PedidoService pedidoService;
 
-    @Test
-    public void testObtenerTodos() throws Exception {
-        Pedidos pedido = new Pedidos();
-        when(pedidoService.findAll()).thenReturn(Arrays.asList(pedido));
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/pedidos"))
+    @Test
+    void testObtenerPedidos() throws Exception {
+        Pedido p1 = new Pedido(1L, 100L, new Date(), Pedido.EstadoPedido.EN_PROCESO, Collections.emptyList());
+        Pedido p2 = new Pedido(2L, 101L, new Date(), Pedido.EstadoPedido.ENVIADO, Collections.emptyList());
+
+        when(pedidoService.findAll()).thenReturn(Arrays.asList(p1, p2));
+
+        mockMvc.perform(get("/pedidos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.size()").value(2));
     }
 
     @Test
-    public void testGuardarPedido() throws Exception {
-        Pedidos pedido = new Pedidos();
-        when(pedidoService.save(any(Pedidos.class))).thenReturn(pedido);
+    void testGuardarPedido() throws Exception {
+        Pedido nuevo = new Pedido(null, 123L, new Date(), Pedido.EstadoPedido.EN_PROCESO, Collections.emptyList());
+        Pedido guardado = new Pedido(10L, 123L, new Date(), Pedido.EstadoPedido.ENVIADO, Collections.emptyList());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/pedidos")
+        when(pedidoService.crearPedido(any(Pedido.class))).thenReturn(guardado);
+
+        mockMvc.perform(post("/pedidos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testEliminarPedido() throws Exception {
-        Long id = 1L;
-        doNothing().when(pedidoService).delete(id);
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/pedidos/" + id))
-                .andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(nuevo)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.estado").value("EN_TRANSITO"));
     }
 }

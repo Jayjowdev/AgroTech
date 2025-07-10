@@ -1,14 +1,17 @@
 package com.AgroTech.Pedidos.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.AgroTech.Pedidos.model.Pedidos;
+import com.AgroTech.Pedidos.model.DetallePedido;
+import com.AgroTech.Pedidos.model.Pedido;
+import com.AgroTech.Pedidos.repository.DetallePedidoRepository;
 import com.AgroTech.Pedidos.repository.PedidoRepository;
-import com.AgroTech.Pedidos.webclient.ProductoClient;
+import com.AgroTech.Pedidos.webClient.ProductoClient;
 
 import jakarta.transaction.Transactional;
 
@@ -17,42 +20,52 @@ import jakarta.transaction.Transactional;
 public class PedidoService {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private PedidoRepository pedidoRepo;
 
     @Autowired
+    private DetallePedidoRepository  detallePedidoRepo;
+
+     @Autowired
     private ProductoClient productoClient;
 
-    public List<Pedidos> findAll(){
-        return pedidoRepository.findAll();
+    public List<Pedido> findAll() {
+        return pedidoRepo.findAll();
     }
 
-    public Pedidos findById(Long id){
-        return pedidoRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Pedido no encontrado (ID: "+ id +")"));
+    public Pedido getById(Long id) {
+        return pedidoRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado: " + id));
     }
 
-    public Pedidos save(Pedidos pedido){
-        Map<String, Object> producto = productoClient.getProductoById(String.valueOf(pedido.getProductoId()));
-        if (producto==null || producto.isEmpty()) {
-            throw new RuntimeException("Producto no encontrado (ID: " + pedido.getProductoId() + ")");
+    public Pedido updatePedido(Long id, Pedido datos) {
+        Pedido existente = getById(id);
+        existente.setEstado(datos.getEstado());
+        existente.setFechaEstimada(datos.getFechaEstimada());
+        // No actualizamos detalles aquí para simplificar
+    return pedidoRepo.save(existente);
+    }
+
+    public void deletePedido(Long id) {
+        Pedido pedido = getById(id);
+        pedidoRepo.delete(pedido);
+    }
+
+
+    public Pedido crearPedido(Pedido pedido) {
+        pedido.setFechaEstimada(new Date());
+        pedido.setEstado(Pedido.EstadoPedido.EN_PROCESO);
+
+        // Validar productos con WebClient
+        for (DetallePedido detalle : pedido.getDetalles()) {
+            Map<String, Object> producto = productoClient.getProductoById(detalle.getProductoId());
+            if (producto == null || producto.get("nombre") == null) {
+                throw new RuntimeException("Producto inválido con ID: " + detalle.getProductoId());
+            }
+            detalle.setPedido(pedido); // vincular con el pedido
         }
 
-        return pedidoRepository.save(pedido);
-    }
-     public Pedidos update(Long id, Pedidos pedidoActualizado) {
-        Pedidos pedidoExistente = findById(id);
-
-        pedidoExistente.setCantidad(pedidoActualizado.getCantidad());
-        pedidoExistente.setEstado(pedidoActualizado.getEstado());
-        pedidoExistente.setFechaPedido(pedidoActualizado.getFechaPedido());
-
-        return pedidoRepository.save(pedidoExistente);
+        return pedidoRepo.save(pedido); // guarda pedido y cascades detalles
     }
 
-    public void delete(Long id) {
-        if (!pedidoRepository.existsById(id)) {
-            throw new RuntimeException("Pedido no encontrado (ID: " + id + ")");
-        }
-        pedidoRepository.deleteById(id);
-    }
+    
 }

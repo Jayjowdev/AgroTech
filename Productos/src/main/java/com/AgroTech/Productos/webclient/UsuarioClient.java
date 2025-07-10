@@ -17,16 +17,18 @@ public class UsuarioClient {
             .build();   
     }
 
-  public Map<String, Object> getProductoById(String usuarioId){
+  public Map<String, Object> getProductoById(String id){
         return webClient.get()
-                .uri("/producto/{id}", usuarioId)
+                .uri("/producto/{id}", id)
                 .retrieve()
                 .onStatus(
                         Status -> Status.is4xxClientError(),
                         response -> response.bodyToMono(String.class)
-                                .map(body -> new RuntimeException("Entrega no encontrada (ID: " + usuarioId + ")"))
+                                .map(body -> new RuntimeException("Entrega no encontrada (ID: " + id + ")"))
                 )
                 .bodyToMono(Map.class)
                 .block();
     }
 }
+        
+

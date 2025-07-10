@@ -17,28 +17,39 @@ public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public List<Producto> findAll() {
+    //metodo para buscar todos los productos
+    public List<Producto> findAll(){
         return productoRepository.findAll();
     }
 
-    public Producto findById(Long ProductoId) {
-        return productoRepository.findById(ProductoId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado (ID: " + ProductoId + ")"));
+    //metodo para buscar un producto por id
+    public  Producto getProductoId(long id){
+        return productoRepository.findById(id)
+        .orElseThrow(()-> new RuntimeException("producto no encontrado por su id"));
     }
 
-    public Producto guardar(Producto producto) {
-    return productoRepository.save(producto);
+    //metodo para guardar un producto
+    public Producto saveProducto(Producto producto){
+        return productoRepository.save(producto);
     }
-    
-    public void delete(Long productoId) {
-        if (!productoRepository.existsById(productoId)) {
-            throw new RuntimeException("Producto no encontrado (ID: " + productoId + ")");
+
+    // Actualizar un producto existente
+    public Producto updateProducto(long id, Producto datosActualizados) {
+        Producto producto = productoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado por su ID"));
+
+        producto.setNombre(datosActualizados.getNombre());
+        producto.setPrecio(datosActualizados.getPrecio());
+        producto.setStock(datosActualizados.getStock());
+
+        return productoRepository.save(producto);
+    }
+
+    //eliminar un producto por id
+    public void deleteProducto(Long id){
+        if(!productoRepository.existsById(id)){
+            throw new RuntimeException("Producto no encontrado por id: "+id);
         }
-        productoRepository.deleteById(productoId);
+        productoRepository.deleteById(id);
     }
-
-	public Object obtenerProductoPorId(long l) {
-		//Metodo que utliza para el mockup y testeo
-		throw new UnsupportedOperationException("Metodo sin implementar 'obtenerProductoPorId'");
-	}
 }

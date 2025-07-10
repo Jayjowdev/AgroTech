@@ -1,58 +1,52 @@
-
 package com.AgroTech.Entregas.service;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.AgroTech.Entregas.Model.Entrega;
-import com.AgroTech.Entregas.Repository.EntregaRepository;
-import com.AgroTech.Entregas.Service.EntregaService;
+import com.AgroTech.Entregas.model.Entrega;
+import com.AgroTech.Entregas.repository.EntregaRepository;
 
-
+@ExtendWith(MockitoExtension.class)
 public class EntregaServiceTest {
 
     @Mock
-    private EntregaRepository entregaRepository;
+    private EntregaRepository repository;
 
     @InjectMocks
-    private EntregaService entregaService;
+    private EntregaService service;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+    
+    void testObtenerTodasLasEntregas() {
+        Entrega e1 = new Entrega(1L, "Santiago", "Entregado", new Date());
+        Entrega e2 = new Entrega(2L, "Valparaíso", "En camino", new Date());
+
+        when(repository.findAll()).thenReturn(Arrays.asList(e1, e2));
+
+        List<Entrega> resultado = service.obtenerEntregas();
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado).contains(e1, e2);
     }
 
     @Test
-    public void testGuardarEntrega() {
-        Entrega entrega = new Entrega();
-        entrega.setIdEntrega(1L);
-        entrega.setEstado("EN_TRANSITO");
+    void testGuardarEntrega() {
+        Entrega nueva = new Entrega(null, "Rancagua", "Pendiente", new Date());
+        Entrega guardada = new Entrega(10L, "Rancagua", "Pendiente", new Date());
 
-        when(entregaRepository.save(entrega)).thenReturn(entrega);
+        when(repository.save(nueva)).thenReturn(guardada);
 
-        Entrega resultado = entregaService.save(entrega);
-        assertNotNull(resultado);
-        assertEquals("EN_TRANSITO", resultado.getEstado());
-    }
+        Entrega resultado = service.crear("Pendiente", new Date());
 
-    @Test
-    public void testBuscarEntregaPorId() {
-        Entrega entrega = new Entrega();
-        entrega.setIdEntrega(1L);
-
-        when(entregaRepository.findById(1L)).thenReturn(Optional.of(entrega));
-
-        Entrega resultado = (Entrega) entregaService.findByEntregaId(1L);
-        assertNotNull(resultado);
-        assertEquals(1L, resultado.getEntregaId());
+        assertThat(resultado.getId()).isEqualTo(10L);
+        assertThat(resultado.getDireccionEntrega()).isEqualTo("Rancagua");
     }
 }

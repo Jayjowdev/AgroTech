@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "DetallesPedidosApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.DetallesPedidos.DetallesPedidosApplication",
+            "projectName": "DetallesPedidos"
+        },
+        {
+            "type": "java",
+            "name": "EntregasApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.Entregas.EntregasApplication",
+            "projectName": "Entregas"
+        },
+        {
+            "type": "java",
+            "name": "IncidenciasApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.IncidenciasApplication",
+            "projectName": "Incidencias"
+        },
+        {
+            "type": "java",
+            "name": "PedidosApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.Pedidos.PedidosApplication",
+            "projectName": "Pedidos"
+        },
+        {
+            "type": "java",
+            "name": "ProductosApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.Productos.ProductosApplication",
+            "projectName": "Productos"
+        },
+        {
+            "type": "java",
+            "name": "SeguimientoApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.SeguimientoApplication",
+            "projectName": "Seguimiento"
+        },
+        {
+            "type": "java",
+            "name": "UsuariosApplication",
+            "request": "launch",
+            "mainClass": "com.AgroTech.UsuariosApplication",
+            "projectName": "Usuarios"
+        }
+    ]
+}

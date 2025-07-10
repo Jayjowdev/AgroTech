@@ -1,82 +1,107 @@
 package com.AgroTech.Usuarios.service;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.AgroTech.model.Usuario;
-import com.AgroTech.repository.RolRepository;
-import com.AgroTech.repository.UsuarioRepository;
-import com.AgroTech.service.UsuarioService;
+import java.util.Arrays;
 
-class UsuarioServiceTest {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-    private UsuarioRepository usuarioRepository;
-    private RolRepository rolRepository;
-    private PasswordEncoder passwordEncoder;
+import com.AgroTech.Usuarios.controller.usuarioController;
+import com.AgroTech.Usuarios.model.Rol;
+import com.AgroTech.Usuarios.model.Rol.NombreRol;
+import com.AgroTech.Usuarios.model.Usuario;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+@WebMvcTest(usuarioController.class)
+public class UsuarioServiceTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UsuarioService usuarioService;
 
-    @BeforeEach
-    void setUp() {
-        usuarioRepository = mock(UsuarioRepository.class);
-        rolRepository = mock(RolRepository.class);
-        passwordEncoder = mock(PasswordEncoder.class);
-        usuarioService = new UsuarioService(usuarioRepository, rolRepository, passwordEncoder);
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void testObtenerUsuarios() throws Exception {
+        Rol rolAdmin = Rol.builder()
+            .id(1L)
+            .nombre("ADMIN")
+            .nombreRol(NombreRol.ADMIN)
+            .build();
+
+        Rol rolCliente = Rol.builder()
+            .id(2L)
+            .nombre("CLIENTE")
+            .nombreRol(NombreRol.CLIENTE)
+            .build();
+
+        Usuario u1 = Usuario.builder()
+            .id(1L)
+            .username("jose123")
+            .correo("jose@example.com")
+            .password("1234")
+            .rol(rolAdmin)
+            .build();
+
+        Usuario u2 = Usuario.builder()
+            .id(2L)
+            .username("maria456")
+            .correo("maria@example.com")
+            .password("5678")
+            .rol(rolCliente)
+            .build();
+
+        when(usuarioService.findAll()).thenReturn(Arrays.asList(u1, u2));
+
+        mockMvc.perform(get("/usuarios"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2));
     }
 
     @Test
-    void testExisteUsuarioPorCorreo() {
-        String correo = "test@correo.com";
-        when(usuarioRepository.existsByCorreo(correo)).thenReturn(true);
+    void testGuardarUsuario() throws Exception {
+        Rol rolAdmin = Rol.builder()
+            .id(1L)
+            .nombre("ADMIN")
+            .nombreRol(NombreRol.ADMIN)
+            .build();
 
-        assertTrue(usuarioService.existeUsuarioPorCorreo(correo));
-        verify(usuarioRepository, times(1)).existsByCorreo(correo);
-    }
+        Usuario nuevo = Usuario.builder()
+            .username("ana789")
+            .correo("ana@example.com")
+            .password("clave123")
+            .rol(rolAdmin)
+            .build();
 
-    @Test
-    void testCreaUsuario() {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo("nuevo@correo.com");
-        usuario.setPassword("1234");
+        Usuario guardado = Usuario.builder()
+            .id(10L)
+            .username("ana789")
+            .correo("ana@example.com")
+            .password("clave123")
+            .rol(rolAdmin)
+            .build();
 
-        when(usuarioRepository.existsByCorreo(usuario.getCorreo())).thenReturn(false);
-        when(passwordEncoder.encode(usuario.getPassword())).thenReturn("encrypted");
-        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+        when(usuarioService.save(any(Usuario.class))).thenReturn(guardado);
 
-        String username = "nuevo@correo.com";
-        String password = "1234";
-        String nombreRol = "USER";
-        Usuario creado = usuarioService.registrarUsuario(username, password, nombreRol);
-
-        assertNotNull(creado);
-        assertEquals("nuevo@correo.com", creado.getCorreo());
-        verify(usuarioRepository, times(1)).save(any(Usuario.class));
-    }
-
-    @Test
-    void testCreaUsuarioYaExistente() {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo("existente@correo.com");
-
-        when(usuarioRepository.existsByCorreo(usuario.getCorreo())).thenReturn(true);
-
-        String username = "existente@correo.com";
-        String password = "1234";
-        String nombreRol = "USER";
-        Usuario creado = usuarioService.registrarUsuario(username, password, nombreRol);
-
-        assertNull(creado);
-        verify(usuarioRepository, never()).save(any());
+        mockMvc.perform(post("/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(nuevo)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.correo").value("ana@example.com"));
     }
 }

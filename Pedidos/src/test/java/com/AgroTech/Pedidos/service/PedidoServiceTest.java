@@ -1,20 +1,23 @@
 package com.AgroTech.Pedidos.service;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.AgroTech.Pedidos.model.Pedidos;
+import com.AgroTech.Pedidos.model.Pedido;
+import com.AgroTech.Pedidos.model.Pedido.EstadoPedido;
 import com.AgroTech.Pedidos.repository.PedidoRepository;
 
+@ExtendWith(MockitoExtension.class)
 public class PedidoServiceTest {
 
     @Mock
@@ -23,32 +26,27 @@ public class PedidoServiceTest {
     @InjectMocks
     private PedidoService pedidoService;
 
-    public PedidoServiceTest() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+    void testObtenerTodosLosPedidos() {
+        Pedido p1 = new Pedido(1L, 100L, new Date(), EstadoPedido.ENVIADO, Collections.emptyList());
+        Pedido p2 = new Pedido(2L, 101L, new Date(), EstadoPedido.ENTREGADO, Collections.emptyList());
+
+        when(pedidoRepository.findAll()).thenReturn(Arrays.asList(p1, p2));
+
+        List<Pedido> resultado = pedidoService.findAll();
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado.get(0).getEstado()).isEqualTo("PENDIENTE");
     }
 
     @Test
-    public void testGuardarPedido() {
-        Pedidos pedido = new Pedidos();
-        when(pedidoRepository.save(pedido)).thenReturn(pedido);
+    void testGuardarPedido() {
+        Pedido nuevo = new Pedido(null, 123L, new Date(), EstadoPedido.ENVIADO, Collections.emptyList());
+        Pedido guardado = new Pedido(10L, 123L, new Date(), EstadoPedido.EN_PROCESO, Collections.emptyList());
 
-        Pedidos resultado = pedidoService.save(pedido);
-        assertEquals(pedido, resultado);
-    }
+        when(pedidoRepository.save(nuevo)).thenReturn(guardado);
 
-    @Test
-    public void testObtenerTodos() {
-        List<Pedidos> lista = Arrays.asList(new Pedidos(), new Pedidos());
-        when(pedidoRepository.findAll()).thenReturn(lista);
-
-        List<Pedidos> resultado = pedidoService.findAll();
-        assertEquals(2, resultado.size());
-    }
-
-    @Test
-    public void testEliminarPedido() {
-        Long id = 1L;
-        pedidoService.delete(id);
-        verify(pedidoRepository, times(1)).deleteById(id);
+        Pedido resultado = pedidoService.crearPedido(guardado);
+        assertThat(resultado.getId()).isEqualTo(10L);
+        assertThat(resultado.getEstado()).isEqualTo("EN_TRANSITO");
     }
 }

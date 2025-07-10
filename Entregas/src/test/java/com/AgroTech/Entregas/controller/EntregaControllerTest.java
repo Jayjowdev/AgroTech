@@ -1,55 +1,61 @@
-
 package com.AgroTech.Entregas.controller;
 
-import java.util.Optional;
+import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 
-import com.AgroTech.Entregas.Controller.EntregaController;
-import com.AgroTech.Entregas.Model.Entrega;
-import com.AgroTech.Entregas.Service.EntregaService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
 
+import com.AgroTech.Entregas.model.Entrega;
+import com.AgroTech.Entregas.service.EntregaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@WebMvcTest(EntregaControllerTest.class)
 public class EntregaControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private EntregaService entregaService;
 
-    @InjectMocks
-    private EntregaController entregaController;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    public void testCrearEntrega() {
-        Entrega entrega = new Entrega();
-        entrega.setEstado("EN_TRANSITO");
+    void testCrearEntrega() throws Exception {
+        // Simulamos la petición JSON entrante
+        String estado = "Pendiente";
+        Date fecha = new Date();
 
-        when(entregaService.save(entrega)).thenReturn(entrega);
+        Entrega creada = new Entrega(10L, null, estado, fecha); // suponiendo que dirección no es parte del método crear
 
-        ResponseEntity<?> response = entregaController.createEntrega(entrega);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(entrega, response.getBody());
-    }
+        // Simula comportamiento del servicio
+        when(entregaService.crear(any(String.class), any(Date.class))).thenReturn(creada);
 
-    @Test
-    public void testObtenerEntregaPorId() {
-        Entrega entrega = new Entrega();
-        entrega.setIdEntrega(1L);
+        // Representación JSON manual de los parámetros
+        String jsonPayload = """
+        {
+            "estado": "Pendiente",
+            "fechaEstimada": "%d"
+        }
+        """.formatted(fecha.getTime());
 
-        when(entregaService.buscarEntregaPorId(1L)).thenReturn(Optional.of(entrega));
-
-        ResponseEntity<?> response = entregaController.getEntregaById(1L);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(entrega, response.getBody());
+        mockMvc.perform(post("/entregas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.estado").value("Pendiente"));
     }
 }

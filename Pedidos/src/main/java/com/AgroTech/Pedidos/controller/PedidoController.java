@@ -13,59 +13,61 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.AgroTech.Pedidos.model.Pedidos;
+import com.AgroTech.Pedidos.model.Pedido;
 import com.AgroTech.Pedidos.service.PedidoService;
 
 @RestController
 @RequestMapping("/api/v1/pedidos")
 public class PedidoController {
-
-    @Autowired
+@Autowired
     private PedidoService pedidoService;
-    
+
     @GetMapping
-    public ResponseEntity<List<Pedidos>> getAllPedidos() {
-        List<Pedidos> Lista = pedidoService.findAll();
-        if(Lista.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
-        
-        return ResponseEntity.ok(Lista);
+    public ResponseEntity<List<Pedido>> getAll() {
+        return ResponseEntity.ok(pedidoService.findAll());
     }
 
+    // GET /api/v1/pedidos/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Pedidos> getPedidoById(@PathVariable Long id) {
-    Pedidos pedido = pedidoService.findById(id);
-
-    if (pedido != null) {
-        return ResponseEntity.ok(pedido);
-    } else {
-        return ResponseEntity.notFound().build();
-    }
-    }
-
-    @PostMapping("/{Id}")
-    public ResponseEntity<?> createPedido(@RequestBody Pedidos pedido) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
-            Pedidos savedPedido = pedidoService.save(pedido);
-            return ResponseEntity.status(201).body(savedPedido);
-        } catch (RuntimeException  e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+            Pedido pedido = pedidoService.getById(id);
+            return ResponseEntity.ok(pedido); // 200 OK
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Pedido no encontrado con ID: " + id); // 404 Not Found
         }
     }
 
+    // POST /api/v1/pedidos
+    @PostMapping
+    public ResponseEntity<?> crear(@RequestBody Pedido pedido) {
+        try {
+            Pedido nuevo = pedidoService.crearPedido(pedido);
+            return ResponseEntity.status(201).body(nuevo); // 201 Created
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Error al crear pedido: " + e.getMessage()); // 400 Bad Request
+        }
+    }
+    
+    // PUT /api/v1/pedidos/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Pedidos> actualizar(@PathVariable Long id, @RequestBody Pedidos pedido) {
-        return ResponseEntity.ok(pedidoService.update(id, pedido));
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Pedido pedido) {
+        try {
+            Pedido actualizado = pedidoService.updatePedido(id, pedido);
+            return ResponseEntity.ok(actualizado); // 200 OK
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Pedido no encontrado para actualizar con ID: " + id); // 404 Not Found
+        }
     }
 
-    @DeleteMapping("/{Id}")
-    public ResponseEntity<?> deletePedido(@RequestBody Long pedidoId) {
+    // DELETE /api/v1/pedidos/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            pedidoService.delete(pedidoId);
-            return ResponseEntity.noContent().build();
+            pedidoService.deletePedido(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("Pedido no encontrado para eliminar con ID: " + id); // 404 Not Found
         }
     }
 }

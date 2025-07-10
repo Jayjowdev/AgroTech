@@ -8,25 +8,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class PedidoClient {
-
+    
     private final WebClient webClient;
-
     public PedidoClient(@Value("${pedido-service.url}") String pedidoServiceUrl) {
         this.webClient = WebClient.builder()
                 .baseUrl(pedidoServiceUrl)
                 .build();
     }
-    public Map<String, Object> getPedidoById(String idPedido) {
+    public Map<String, Object> getPedidoById(String id) {
         return webClient.get()
-                .uri("/pedidos/{id}", idPedido)
+                .uri("/pedidos/{id}", id)
                 .retrieve()
                 .onStatus(
                         status -> status.is4xxClientError(),
                          response -> response.bodyToMono(String.class)
-                        .map(body -> new RuntimeException("Pedido no encontrado (ID: " + idPedido + ")"))
+                        .map(body -> new RuntimeException("Pedido no encontrado (ID: " + id + ")"))
                 )
                 .bodyToMono(Map.class)
                 .block();
     }
-    
 }

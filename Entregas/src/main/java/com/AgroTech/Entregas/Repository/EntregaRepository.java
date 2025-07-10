@@ -1,14 +1,10 @@
-package com.AgroTech.Entregas.Repository;
-
-import java.util.Optional;
+package com.AgroTech.Entregas.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.AgroTech.Entregas.Model.Entrega;
+import com.AgroTech.Entregas.model.Entrega;
 
 @Repository
-public interface EntregaRepository extends JpaRepository <Entrega, Long> {
-    Optional<Entrega> findById(Long id);
-    Optional<Entrega> buscarEntregaPorId(long id);
+public interface EntregaRepository extends JpaRepository<Entrega, Long> {
 }

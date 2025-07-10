@@ -1,53 +1,56 @@
-package com.AgroTech.Entregas.Service;
+package com.AgroTech.Entregas.service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.AgroTech.Entregas.Model.Entrega;
-import com.AgroTech.Entregas.Repository.EntregaRepository;
-import com.AgroTech.Entregas.webclient.PedidoClient;
+import com.AgroTech.Entregas.model.Entrega;
+import com.AgroTech.Entregas.repository.EntregaRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class EntregaService {
-
-    @Autowired
+@Autowired
     private EntregaRepository entregaRepository;
 
-    @Autowired
-    private PedidoClient pedidoClient;
-
-    public List<Entrega> findAll() {
+    // Mostrar todas las entregas
+    public List<Entrega> obtenerEntregas() {
         return entregaRepository.findAll();
     }
 
-    public Object findByEntregaId(Long entregaId) {
-        return entregaRepository.findById(entregaId)
-                .orElseThrow(() -> new RuntimeException("Entrega no encontrada (ID: " + entregaId + ")"));
+    // Buscar entrega por ID
+    public Entrega getEntregaId(Long id) {
+        return entregaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Entrega no encontrada por ese id"));
     }
-    
-    public Entrega save(Entrega entrega) {
-        Map<String, Object> pedido = pedidoClient.getPedidoById(entrega.getIdPedido());
-        if (pedido == null || pedido.isEmpty()) {
-            throw new RuntimeException("Pedido no encontrado (ID: " + entrega.getIdPedido() + ")");
+
+    // Crear nueva entrega
+    public Entrega crear(String estado, Date fechaEstimada) {
+        Entrega nuevo = new Entrega();
+        nuevo.setEstado(estado);
+        nuevo.setFechaEstimada(fechaEstimada);
+        return entregaRepository.save(nuevo);
+    }
+
+    // Actualizar entrega existente
+    public Entrega actualizarEntrega(Long id, String estado, Date fechaEstimada) {
+        Entrega existente = entregaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Entrega no encontrada por Id: " + id));
+
+        existente.setEstado(estado);
+        existente.setFechaEstimada(fechaEstimada);
+        return entregaRepository.save(existente);
+    }
+
+    //Elminar una entrega existente
+    public void delete(Long id){
+        if(!entregaRepository.existsById(id)){
+            throw new RuntimeException("Entrega no encontrada por id" + id); 
         }
-        return entregaRepository.save(entrega);
+        entregaRepository.deleteById(id);
     }
-
-    public void delete(Long entregaId) {
-        if (!entregaRepository.existsById(entregaId)) {
-            throw new RuntimeException("Entrega no encontrada (ID: " + entregaId + ")");
-        }
-        entregaRepository.deleteById(entregaId);
-    }
-
-    public Object buscarEntregaPorId(long l) {
-        throw new UnsupportedOperationException("Metodo sin implementar 'buscarEntregaPorId'");
-    }
-
 }

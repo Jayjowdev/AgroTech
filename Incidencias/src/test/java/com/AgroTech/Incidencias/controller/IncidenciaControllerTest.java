@@ -1,63 +1,64 @@
 package com.AgroTech.Incidencias.controller;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.any;
 
-import com.AgroTech.controller.IncidenciaController;
-import com.AgroTech.model.Incidencia;
-import com.AgroTech.service.IncidenciaService;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-class IncidenciaControllerTest {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
 
-    @InjectMocks
-    private IncidenciaController incidenciaController;
+import com.AgroTech.Incidencias.model.Incidencia;
+import com.AgroTech.Incidencias.service.IncidenciaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    @Mock
+@WebMvcTest(IncidenciaController.class)
+public class IncidenciaControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private IncidenciaService incidenciaService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void testObtenerIncidencias() throws Exception {
+        Incidencia i1 = new Incidencia(1L, "ABC123", new Date(), Incidencia.EstadoIncidencia.ABIERTA,Incidencia.EstadoMaquina.MANTENIMIENTO);
+        Incidencia i2 = new Incidencia(2L, "XYZ789", new Date(), Incidencia.EstadoIncidencia.CERRADA, Incidencia.EstadoMaquina.OPERATIVA);
+
+        when(incidenciaService.findAll()).thenReturn(Arrays.asList(i1, i2));
+
+        mockMvc.perform(get("/incidencias"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2));
     }
 
     @Test
-    void testCrearIncidencia() {
-        Incidencia incidencia = new Incidencia();
-        Long userId = 1L;
-        when(incidenciaService.crearIncidencia(incidencia, userId)).thenReturn(incidencia);
+    void testGuardarIncidencia() throws Exception {
+        Incidencia nueva = new Incidencia(null, "ZZZ456", new Date(), Incidencia.EstadoIncidencia.ABIERTA, Incidencia.EstadoMaquina.MANTENIMIENTO);
+        Incidencia guardada = new Incidencia(10L, "ZZZ456", new Date(), Incidencia.EstadoIncidencia.CERRADA, Incidencia.EstadoMaquina.OPERATIVA);
 
-        Incidencia response = incidenciaController.crearIncidencia(incidencia, "testUser");
+        when(incidenciaService.saveIncidencia(any(Incidencia.class))).thenReturn(guardada);
 
-        assertNotNull(response);
-    }
-
-    @Test
-    void testObtenerIncidencia() {
-        Incidencia incidencia = new Incidencia();
-        incidencia.setId(1L);
-        when(incidenciaService.obtenerIncidenciaPorId(1L)).thenReturn(incidencia);
-
-        Incidencia response = incidenciaController.obtenerIncidenciaPorId(1L);
-        assertNotNull(response);
-        assertEquals(1L, response.getId());
-    }
-
-    @Test
-    void testListarIncidencias() {
-        List<Incidencia> lista = Arrays.asList(new Incidencia(), new Incidencia());
-        when(incidenciaService.obtenerTodasIncidencias()).thenReturn(lista);
-
-        List<Incidencia> response = incidenciaController.obtenerTodasIncidencias();
-
-        assertEquals(2, response.size());
+        mockMvc.perform(post("/incidencias")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(nueva)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.serialMaquina").value("ZZZ456"))
+                .andExpect(jsonPath("$.estadoIncidencia").value("ABIERTA"));
     }
 }
